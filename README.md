@@ -187,7 +187,7 @@ The system returns the highest-rated destinations that match the selected user p
 
 ### Destination Search
 
-![Destination Search](images/destination_search.jpeg)
+![Destination Search](images/destinationsearch.jpeg)
 
 ---
 
@@ -199,7 +199,7 @@ The system returns the highest-rated destinations that match the selected user p
 
 ### Analytics Dashboard
 
-![Analytics Dashboard](images/visual_analytics.jpeg)
+![Analytics Dashboard](images/visualanalytics.jpeg)
 
 ---
 
@@ -288,9 +288,9 @@ B.Tech Computer Science and Engineering
 
 Guru Nanak Dev Engineering College, Ludhiana
 
-GitHub: https://github.com/your-username
+GitHub: https://github.com/rajpreetsinghsekhon
 
-LinkedIn: https://www.linkedin.com/in/your-linkedin-profile
+LinkedIn: www.linkedin.com/in/rajpreet-singh-37b216301
 
 ---
 
