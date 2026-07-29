@@ -288,7 +288,7 @@ B.Tech Computer Science and Engineering
 
 Guru Nanak Dev Engineering College, Ludhiana
 
-GitHub: https://github.com/your-username
+GitHub: https://github.com/rajpreetsinghsekhon
 
 LinkedIn: https://www.linkedin.com/in/your-linkedin-profile
 
