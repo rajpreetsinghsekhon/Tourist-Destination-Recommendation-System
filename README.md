@@ -279,6 +279,8 @@ Future enhancements for this project include:
 - Mobile application deployment.
 
 ---
+## Live Demo
+https://tourist-destination-recommendation-system.streamlit.app/
 
 ## Author
 
