@@ -264,17 +264,27 @@ The notebook contains an additional content-similarity prototype using `CountVec
 
 ![Home Page](images/home.jpeg)
 
+### Recommendation page
+![Recommendation Page](images/recommendation.jpeg)
+
+### Model page
+![Model Page](images/model.jpeg)
+
+### Favourite page
+![Favourite Page](images/favourite.jpeg)
+
+### Dataset page
+![Dataset Page](images/dataset.jpeg)
+
+### Analytics page
+![Analytics Page](images/analytics.jpeg)
+
 ### Destination Search
 
-![Destination Search](images/destinationsearch.jpeg)
+![Destination Search](images/search.jpeg)
 
-### Recommendation Results
-
-![Recommendation Results](images/recommendation.jpeg)
-
-### Analytics Dashboard
-
-![Analytics Dashboard](images/visualanalytics.jpeg)
+### About page
+![About Page](images/about.jpeg)
 
 ---
 
