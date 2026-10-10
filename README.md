@@ -23,6 +23,12 @@ The objective of this project is to simplify travel planning by:
 
 ## Features
 
+### Streamlit Dashboard
+
+- Navigate between Home, Recommender, Analytics, Dataset, Models, About, Search, and Favorites.
+- Browse the source CSV without changing its columns or stored values.
+- Explore state ratings, traveller suitability, rating distribution, budget, and recommended months.
+
 ### Destination Search
 
 - Search any tourist destination by name.
@@ -174,6 +180,8 @@ The recommendation considers:
 - Traveller Type
 
 The system returns the highest-rated destinations that match the selected user preferences.
+
+The live Streamlit app filters by the selected preferences and ranks matching results using the dataset's `Rating` column. The notebook also contains a separate content-similarity prototype using `CountVectorizer` and cosine similarity; it is not selectable in the Streamlit app.
 
 ---
 
