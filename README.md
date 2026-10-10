@@ -1,10 +1,16 @@
-# Tourist Destination Recommendation System
+
+# Indian Tourism Explorer
+## Tourist Destination Recommendation System
 
 ## Project Description
 
-The Tourist Destination Recommendation System is a data science project developed to help users discover suitable tourist destinations across India based on their travel preferences.
+Indian Tourism Explorer is a data science project developed to help users discover suitable tourist destinations across India based on their travel preferences.
 
-The application analyzes tourism-related attributes such as budget, destination category, best travel season, traveller type, and destination ratings to recommend suitable tourist destinations. It also provides an interactive Streamlit web application where users can search for destinations, explore destination details, and receive personalized travel recommendations through an intuitive interface.
+The application analyzes tourism-related attributes such as budget, destination category, best travel season, traveller type, destination ratings, and other destination characteristics to recommend suitable tourist destinations.
+
+Built using Python and Streamlit, the application provides an interactive dashboard where users can search for destinations, explore tourism data, view analytics, save favourite destinations, and receive personalized recommendations through a user-friendly interface.
+
+The application also integrates Google Maps links to help users view the geographical locations of recommended destinations.
 
 ---
 
@@ -17,45 +23,94 @@ The objective of this project is to simplify travel planning by:
 - Recommending tourist destinations based on user preferences.
 - Displaying detailed information about tourist destinations.
 - Helping users make informed travel decisions using data analytics.
-- Providing an interactive and user-friendly web application.
+- Providing geographical location links through Google Maps.
+- Offering an interactive and user-friendly web application.
 
 ---
 
 ## Features
 
-### Streamlit Dashboard
+### 1. Streamlit Dashboard
 
-- Navigate between Home, Recommender, Analytics, Dataset, Models, About, Search, and Favorites.
-- Browse the source CSV without changing its columns or stored values.
-- Explore state ratings, traveller suitability, rating distribution, budget, and recommended months.
+The application provides a dashboard with a sidebar titled **Indian Tourism Explorer**.
 
-### Destination Search
+The sidebar contains the following navigation sections:
 
-- Search any tourist destination by name.
-- View complete destination information instantly.
+- **Home:** Introduction and overview of the application.
+- **Recommender:** Generate personalized tourist destination recommendations.
+- **Analytics:** Explore tourism data through interactive visualizations.
+- **Dataset:** Browse the original tourism dataset.
+- **Models:** Explore information about the recommendation models and their methodology.
+- **About:** View project information and details.
+- **Search:** Search for tourist destinations and explore their information.
+- **Favourite:** Access saved favourite destinations.
 
-### Personalized Recommendation
+### 2. Recommendation Filters
 
-Recommend destinations based on:
+The sidebar includes a dedicated **Recommendation Filters** section that allows users to refine destination recommendations according to their preferences.
+
+The filters include:
+
+- **Budget Category:** Select destinations according to the preferred budget.
+- **Destination Category:** Filter destinations by tourism category.
+- **Best Travel Season:** Choose destinations suitable for the preferred travel season.
+- **Traveller Type:** Find destinations based on traveller suitability, such as family or adventure travel, where supported by the dataset.
+
+These filters help users narrow down available destinations and discover options that match their travel preferences.
+
+### 3. Destination Search
+
+- Search for tourist destinations by name.
+- Explore destination information using the available dataset.
+- View details about a selected destination.
+
+### 4. Personalized Recommendations
+
+The recommendation system suggests tourist destinations based on the user's selected preferences.
+
+The recommendation parameters include:
 
 - Budget Category
 - Destination Category
 - Best Travel Season
 - Traveller Type
 
-### Interactive Data Analytics
+The Streamlit application filters destinations using the selected preferences and ranks matching results according to the dataset's `Rating` column.
 
-The application provides visual analytics including:
+The notebook also contains a separate content-similarity prototype implemented using `CountVectorizer` and cosine similarity. This prototype is not selectable as a recommendation mode in the Streamlit application.
+
+### 5. Google Maps Integration
+
+The application provides a Google Maps link for recommended destinations so users can explore their geographical locations.
+
+Using destination location information, users can:
+
+- Open a destination's location in Google Maps.
+- View the destination's geographical position.
+- Explore the surrounding area and nearby places through Google Maps.
+- Use the map to support further travel planning.
+
+The dataset includes `Latitude` and `Longitude` fields that can support location-based mapping when these coordinates are used by the application.
+
+### 6. Interactive Data Analytics
+
+The analytics dashboard provides visual insights into the tourism dataset, including:
 
 - State-wise Average Tourism Rating
 - Recommended Months Distribution
+- Rating Distribution
+- Budget Analysis
+- Other available tourism-related visualizations
 
-### Destination Information
+The displayed analytics depend on the visualizations implemented in the application.
 
-Displays the following details for the selected destination:
+### 7. Destination Information
+
+The application can display the following destination attributes when available:
 
 - Destination Name
 - State
+- City
 - Rating
 - Budget Category
 - Budget Per Person
@@ -65,19 +120,25 @@ Displays the following details for the selected destination:
 - Adventure Level
 - Food Cost Per Day
 - Shopping Score
+- Accessibility
+- Ideal Duration
+- Latitude
+- Longitude
+- Description
 
-### Streamlit Dashboard
+### 8. Favourite Destinations
 
-- Interactive user interface
-- Destination search functionality
-- Personalized recommendation system
-- Visual analytics dashboard
+The Favourite section allows users to access destinations saved through the application's favourite functionality.
+
+### 9. Dataset Exploration
+
+The Dataset section allows users to inspect the tourism dataset without intentionally changing its original column names or stored values.
 
 ---
 
 ## Dataset
 
-The project uses a custom Indian Tourism Dataset containing approximately **1000 tourist destinations** across India.
+The project uses a custom Indian Tourism Dataset containing approximately **1,000 tourist destinations** across India.
 
 ### Dataset Features
 
@@ -100,7 +161,7 @@ The project uses a custom Indian Tourism Dataset containing approximately **1000
 - Longitude
 - Description
 
-The dataset was cleaned, preprocessed, and feature engineered before building the recommendation system.
+The dataset is cleaned, preprocessed, and explored through data analysis and feature engineering as part of the project workflow.
 
 ---
 
@@ -125,40 +186,50 @@ The dataset was cleaned, preprocessed, and feature engineered before building th
 - Git
 - GitHub
 
+### Mapping Integration
+
+- Google Maps links for viewing destination locations
+
 ---
 
 ## Project Workflow
 
 ```text
 Dataset Collection
-        │
-        ▼
-Data Cleaning
-        │
-        ▼
+        |
+        v
+Data Cleaning and Preprocessing
+        |
+        v
 Exploratory Data Analysis (EDA)
-        │
-        ▼
+        |
+        v
 Feature Engineering
-        │
-        ▼
+        |
+        v
 Data Visualization
-        │
-        ▼
+        |
+        v
 Preference-Based Recommendation System
-        │
-        ▼
+        |
+        v
+Destination Filtering and Rating-Based Ranking
+        |
+        v
+Google Maps Location Links
+        |
+        v
 Streamlit Web Application
-        │
-        ▼
-Tourist Destination Recommendation
+        |
+        v
+Personalized Tourist Destination Discovery
 ```
 
 ---
 
 ## Recommendation System
 
-The project implements a **preference-based recommendation system** that recommends tourist destinations according to user selections.
+The project implements a preference-based recommendation system that suggests destinations according to user selections.
 
 ### Recommendation Process
 
@@ -166,22 +237,24 @@ The project implements a **preference-based recommendation system** that recomme
 2. Data Cleaning and Preprocessing
 3. Feature Engineering
 4. Exploratory Data Analysis
-5. User Preference Filtering
-6. Ranking Destinations by Rating
-7. Displaying Top Recommended Destinations
+5. User Preference Selection
+6. Filtering Destinations by Selected Preferences
+7. Ranking Matching Destinations by Rating
+8. Displaying Recommended Destinations
+9. Providing Google Maps Links for Destination Locations
 
 ### Recommendation Parameters
 
-The recommendation considers:
+The recommendation process considers:
 
 - Budget Category
 - Destination Category
-- Best Season
+- Best Travel Season
 - Traveller Type
 
-The system returns the highest-rated destinations that match the selected user preferences.
+The system returns matching destinations ranked using the dataset's `Rating` column.
 
-The live Streamlit app filters by the selected preferences and ranks matching results using the dataset's `Rating` column. The notebook also contains a separate content-similarity prototype using `CountVectorizer` and cosine similarity; it is not selectable in the Streamlit app.
+The notebook contains an additional content-similarity prototype using `CountVectorizer` and cosine similarity. This prototype is separate from the preference-based recommender currently available in the Streamlit application.
 
 ---
 
@@ -191,19 +264,13 @@ The live Streamlit app filters by the selected preferences and ranks matching re
 
 ![Home Page](images/home.jpeg)
 
----
-
 ### Destination Search
 
 ![Destination Search](images/destinationsearch.jpeg)
 
----
-
 ### Recommendation Results
 
 ![Recommendation Results](images/recommendation.jpeg)
-
----
 
 ### Analytics Dashboard
 
@@ -215,19 +282,19 @@ The live Streamlit app filters by the selected preferences and ranks matching re
 
 Clone the repository:
 
-```
-git clone https://github.com/your-username/Tourist-Destination-Recommendation-System.git
+```bash
+git clone https://github.com/rajpreetsinghsekhon/Tourist-Destination-Recommendation-System.git
 ```
 
 Move to the project directory:
 
-```
+```bash
 cd Tourist-Destination-Recommendation-System
 ```
 
-Install the required libraries:
+Install the required dependencies:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -237,11 +304,17 @@ pip install -r requirements.txt
 
 Run the Streamlit application:
 
-```
-streamlit run app.py
+```bash
+python -m streamlit run app.py
 ```
 
-The application will automatically open in your default web browser.
+The application will display a local URL in the terminal, usually:
+
+```text
+http://localhost:8501
+```
+
+Open this URL in your web browser to use the application locally.
 
 ---
 
@@ -249,24 +322,26 @@ The application will automatically open in your default web browser.
 
 ```text
 Tourist-Destination-Recommendation-System/
-│
+|
 ├── app.py
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-│
+|
 ├── data/
-│   └── Indian_Tourism_Dataset_1000.csv
-│
+|   └── Indian_Tourism_Dataset_1000.csv
+|
 ├── notebooks/
-│   └── Tourist_Recommendation_Destination_System.ipynb
-│
+|   └── Tourist_Recommendation_Destination_System.ipynb
+|
 └── images/
     ├── home.jpeg
-    ├── destination_search.jpeg
+    ├── destinationsearch.jpeg
     ├── recommendation.jpeg
-    └── visual_analytics.jpeg
+    └── visualanalytics.jpeg
 ```
+
+The actual folder and image filenames should match those present in the GitHub repository.
 
 ---
 
@@ -280,6 +355,7 @@ Future enhancements for this project include:
 - Weather forecasting.
 - Nearby attractions recommendation.
 - Restaurant recommendation.
+- Interactive destination maps.
 - Destination image gallery.
 - User authentication and user profiles.
 - AI-powered travel chatbot.
@@ -287,8 +363,18 @@ Future enhancements for this project include:
 - Mobile application deployment.
 
 ---
+
 ## Live Demo
-https://tourist-destination-recommendation-system.streamlit.app/
+
+Explore the deployed application:
+
+[Indian Tourism Explorer – Live Demo](https://tourist-destination-recommendation-system.streamlit.app/)
+
+## GitHub Repository
+
+View the project source code:
+
+https://github.com/rajpreetsinghsekhon/Tourist-Destination-Recommendation-System
 
 ## Author
 
@@ -298,9 +384,9 @@ B.Tech Computer Science and Engineering
 
 Guru Nanak Dev Engineering College, Ludhiana
 
-GitHub: https://github.com/rajpreetsinghsekhon
+GitHub: [rajpreetsinghsekhon](https://github.com/rajpreetsinghsekhon)
 
-LinkedIn: www.linkedin.com/in/rajpreet-singh-37b216301
+LinkedIn: [Rajpreet Singh](https://www.linkedin.com/in/rajpreet-singh-37b216301/)
 
 ---
 
