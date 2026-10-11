@@ -60,6 +60,17 @@ def google_maps_url(destination):
     return f"https://www.google.com/maps/search/?api=1&query={quote_plus(query)}"
 
 
+def favorites_dataframe(favorite_names):
+    favorite_records = df[df["Destination_Name"].isin(favorite_names)]
+    if "Rating" in favorite_records.columns:
+        favorite_records = favorite_records.sort_values("Rating", ascending=False)
+    return favorite_records.drop_duplicates(subset="Destination_Name", keep="first")
+
+
+def normalize_state_names(states):
+    return states.astype('string').str.strip().str.title()
+
+
 # --- Visualization helpers (Plotly) ---
 import plotly.express as px
 import plotly.graph_objects as go
@@ -95,6 +106,35 @@ st.markdown('''
         color: #263445 !important;
         font-weight: 600;
     }
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input,
+    [data-baseweb="select"] > div {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        -webkit-text-fill-color: #1f2937 !important;
+        border-color: #9aa9b8 !important;
+    }
+    [data-testid="stTextInput"] input::placeholder,
+    [data-testid="stTextArea"] textarea::placeholder,
+    [data-testid="stNumberInput"] input::placeholder {
+        color: #536273 !important;
+        -webkit-text-fill-color: #536273 !important;
+        opacity: 1;
+    }
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] label {
+        color: #263445 !important;
+    }
+    [data-testid="stCheckbox"] label,
+    [data-testid="stRadio"] label,
+    [data-testid="stSlider"] label {
+        color: #263445 !important;
+    }
+    input[type="checkbox"],
+    input[type="radio"] {
+        accent-color: #3b82a0;
+    }
     [data-testid="stSidebar"] [data-testid="stSelectbox"] [role="group"] {
         background-color: #ffffff !important;
         border: 1px solid #cbd5df !important;
@@ -113,10 +153,12 @@ st.markdown('''
     [data-testid="stSidebar"] [data-testid="stSelectbox"] svg {
         fill: currentColor;
     }
-    [data-testid="stSidebar"] input,
-    [data-testid="stSidebar"] textarea {
+    [data-testid="stSidebar"] [data-testid="stTextInput"] input,
+    [data-testid="stSidebar"] [data-testid="stTextArea"] textarea,
+    [data-testid="stSidebar"] [data-testid="stNumberInput"] input {
+        background-color: #ffffff !important;
         color: #1f2937 !important;
-        -webkit-text-fill-color: #1f2937;
+        -webkit-text-fill-color: #1f2937 !important;
     }
     [role="listbox"] {
         background-color: #ffffff !important;
@@ -125,6 +167,7 @@ st.markdown('''
     [role="option"] {
         background-color: #ffffff !important;
         color: #1f2937 !important;
+        -webkit-text-fill-color: #1f2937 !important;
     }
     [role="option"]:hover,
     [role="option"][aria-selected="true"] {
@@ -187,14 +230,32 @@ st.markdown('''
         border-radius: 0.85rem;
         box-shadow: 0 2px 5px rgba(23, 37, 54, 0.08);
     }
-    div.stButton > button {
+    body:has(.st-key-dataset-records-table) [role="tooltip"],
+    body:has(.st-key-dataset-records-table) [data-testid="stTooltipContent"],
+    body:has(.st-key-dataset-records-table) [data-baseweb="tooltip"] {
+        display: none !important;
+    }
+    .st-key-destination-search-not-found [data-testid="stAlert"] {
+        background-color: #fff3cd !important;
+        border: 1px solid #e0b94f !important;
+        color: #664d03 !important;
+    }
+    .st-key-destination-search-not-found [data-testid="stAlert"] p,
+    .st-key-destination-search-not-found [data-testid="stAlert"] span,
+    .st-key-destination-search-not-found [data-testid="stAlert"] svg {
+        color: #664d03 !important;
+        fill: #664d03 !important;
+    }
+    div.stButton > button,
+    div[data-testid="stFormSubmitButton"] > button {
         background-color: #ffffff;
         border: 1px solid #cbd5df;
         color: #1f2937 !important;
         border-radius: 0.55rem;
         font-weight: 600;
     }
-    div.stButton > button:hover {
+    div.stButton > button:hover,
+    div[data-testid="stFormSubmitButton"] > button:hover {
         background-color: #eaf2f7;
         border-color: #9bb8c9;
         color: #172536 !important;
@@ -346,9 +407,27 @@ def show_rating_across_states_plotly(df):
     if 'State' not in df.columns or 'Rating' not in df.columns:
         raise ValueError('DataFrame must contain State and Rating columns')
 
-    st_avg = df.groupby('State')['Rating'].mean().reset_index().sort_values('Rating', ascending=True)
-    fig = px.bar(st_avg, x='Rating', y='State', orientation='h', title='Average Rating by State', color='Rating', color_continuous_scale=px.colors.sequential.Viridis)
-    fig.update_layout(height=600, yaxis={'dtick':1}, margin={'l':200})
+    normalized_states = df.assign(State=normalize_state_names(df['State']))
+    normalized_states = normalized_states[normalized_states['State'].notna() & normalized_states['State'].ne('')]
+    available_averages = (
+        normalized_states.groupby('State', as_index=False)['Rating']
+        .mean()
+        .sort_values('Rating', ascending=True)
+    )
+    fig = px.bar(
+        available_averages,
+        x='Rating',
+        y='State',
+        orientation='h',
+        title='Average Rating by State',
+        color='Rating',
+        color_continuous_scale=px.colors.sequential.Viridis,
+    )
+    fig.update_layout(
+        height=540,
+        yaxis={'dtick': 1},
+        margin={'l': 200}
+    )
     return fig
 
 
@@ -464,7 +543,7 @@ if page == "Home":
     st.title("Explore Indian Destinations")
     st.write("Find places to visit, compare real destination details, and explore travel patterns across the dataset.")
 
-    state_count = df['State'].nunique() if 'State' in df.columns else 0
+    state_count = normalize_state_names(df['State']).nunique() if 'State' in df.columns else 0
     average_rating = df['Rating'].mean() if 'Rating' in df.columns else None
     metric_cols = st.columns(3)
     metric_cols[0].metric("Destinations", f"{len(df):,}")
@@ -498,16 +577,24 @@ elif page == "Search":
 
     # Upload removed from Search page per request
 
-    destination_search = st.text_input("Enter Destination Name", key='search_input')
-    if st.button("Search Destination"):
-        if not destination_search:
+    with st.form("destination_search_form"):
+        destination_search = st.text_input(
+            "Enter Destination Name",
+            placeholder="e.g., Manali",
+            key='search_input'
+        )
+        search_submitted = st.form_submit_button("Search Destination")
+
+    if search_submitted:
+        destination_query = destination_search.strip()
+        if not destination_query:
             st.warning("Please enter a destination name to search.")
         else:
             destination_data = data_source[
-                data_source['Destination_Name'].str.contains(destination_search, case=False, na=False)
+                data_source['Destination_Name'].str.strip().str.casefold() == destination_query.casefold()
             ]
             if len(destination_data) > 0:
-                st.success(f"Found {len(destination_data)} matching destination(s)")
+                st.success("Destination found.")
                 row = destination_data.iloc[0]
                 # store selected destination name in session_state for analytics tab
                 st.session_state['selected_destination_name'] = row['Destination_Name']
@@ -555,7 +642,11 @@ elif page == "Search":
                             st.info('Already in favorites')
 
             else:
-                st.warning("Destination not found. Try another name.")
+                with st.container(key="destination-search-not-found"):
+                    st.warning(
+                        f'Destination Not Found: “{destination_query}” is not available '
+                        "in our current dataset. Please check the spelling or try another destination."
+                    )
 
 # --- Analytics page ---
 elif page == "Analytics":
@@ -567,7 +658,8 @@ elif page == "Analytics":
     metric_cols = st.columns(4)
     metric_cols[0].metric("Destinations", f"{len(data_filtered):,}")
     if 'State' in data_filtered.columns:
-        metric_cols[1].metric("States & territories", f"{data_filtered['State'].nunique():,}")
+        normalized_state_count = normalize_state_names(data_filtered['State']).nunique()
+        metric_cols[1].metric("States & territories", f"{normalized_state_count:,}")
     if 'Rating' in data_filtered.columns:
         metric_cols[2].metric("Average rating", f"{data_filtered['Rating'].mean():.2f}")
     if 'Safety_Score' in data_filtered.columns:
@@ -576,6 +668,9 @@ elif page == "Analytics":
     if 'State' in data_filtered.columns and 'Rating' in data_filtered.columns:
         with st.container(border=True):
             st.subheader("Average tourism rating by state")
+            available_state_names = normalize_state_names(data_filtered['State']).dropna()
+            rated_state_count = available_state_names[available_state_names.ne('')].nunique()
+            st.caption(f"Showing average ratings for {rated_state_count} states represented in the dataset.")
             fig_states = show_rating_across_states_plotly(data_filtered)
             fig_states.update_layout(
                 template="plotly_white",
@@ -723,7 +818,7 @@ elif page == "Recommender":
         if st.button('Export Favorites as CSV'):
             fav = st.session_state.get('favorites', [])
             if fav:
-                fav_df = df[df['Destination_Name'].isin(fav)]
+                fav_df = favorites_dataframe(fav)
                 st.download_button('Download favorites CSV', fav_df.to_csv(index=False).encode('utf-8'), file_name='favorites.csv', mime='text/csv')
             else:
                 st.info('No favorites to export')
@@ -748,15 +843,16 @@ elif page == "Dataset":
     records = load_dataset_records()
     st.write("Browse the source records. Column names and values are shown as stored in the CSV.")
     st.caption(f"{len(records):,} rows · {len(records.columns):,} columns")
-    data_tab, summary_tab = st.tabs(["Destination records", "Numeric summary"])
-    with data_tab:
+    st.subheader("Destination records")
+    with st.container(key="dataset-records-table"):
         st.dataframe(records, width="stretch", hide_index=True)
-    with summary_tab:
-        numeric_records = records.select_dtypes(include='number')
-        if numeric_records.empty:
-            st.info("There are no numeric columns to summarize.")
-        else:
-            st.dataframe(numeric_records.describe().T, width="stretch")
+
+    st.subheader("Numeric summary")
+    numeric_records = records.select_dtypes(include='number')
+    if numeric_records.empty:
+        st.info("There are no numeric columns to summarize.")
+    else:
+        st.dataframe(numeric_records.describe().T, width="stretch")
 
 # --- Models page ---
 elif page == "Models":
@@ -785,13 +881,21 @@ elif page == "About":
     )
     about_cols = st.columns(2)
     with about_cols[0], st.container(border=True):
-        st.subheader("Project")
-        st.write("The application supports destination search, preference-based recommendations, dataset exploration, analytics, and a favorites list.")
-        st.write("The dashboard reads destination information from the project’s Indian tourism CSV dataset.")
+        st.subheader("Creator / Developer")
+        st.markdown("**Rajpreet Singh Sekhon**")
+        st.write("B.Tech in Computer Science and Engineering")
+        st.write("Guru Nanak Dev Engineering College (GNDEC)")
+        st.write("Ludhiana, Punjab, India")
     with about_cols[1], st.container(border=True):
-        st.subheader("Technology")
-        st.write("Python · Streamlit · Pandas · NumPy · Plotly · scikit-learn")
-        st.caption("The requirements also include Matplotlib and Seaborn for notebook analysis.")
+        st.subheader("Project")
+        st.markdown("**Indian Tourism Destination Recommendation System**")
+        st.write(
+            "Helps users explore Indian tourist destinations using the available "
+            "destination information and ratings. Users can search destinations, "
+            "filter by budget, category, best season, and traveller type, view "
+            "rating-ranked recommendations, and explore tourism analytics."
+        )
+        st.caption("Built with Python, Streamlit, Pandas, NumPy, and Plotly.")
 
 # --- Favorites page ---
 elif page == "Favorites":
@@ -833,7 +937,7 @@ elif page == "Favorites":
         st.markdown('---')
         # Export favorites
         if st.button('Export Favorites as CSV'):
-            fav_df = df[df['Destination_Name'].isin(favs)]
+            fav_df = favorites_dataframe(favs)
             st.download_button('Download favorites CSV', fav_df.to_csv(index=False).encode('utf-8'), file_name='favorites.csv', mime='text/csv')
 
         # Save/load from disk
