@@ -378,7 +378,7 @@ Future enhancements for this project include:
 
 Explore the deployed application:
 
-[Indian Tourism Explorer – Live Demo](https://tourist-destination-recommendation-system.streamlit.app/)
+https://tourist-destination-recommendation-system.streamlit.app/
 
 ## GitHub Repository
 
